@@ -18,8 +18,14 @@ export const fetchAnimeBySeason = async (year, season, page = 1) => {
             params: { page },
         });
 
+        // Remove duplicates using a Map with anime ID as key
+        const uniqueAnime = new Map();
+        response.data.data.forEach(anime => {
+            uniqueAnime.set(anime.mal_id, anime);
+        });
+
         return {
-            data: response.data.data,
+            data: Array.from(uniqueAnime.values()),
             nextPage: response.data.pagination.has_next_page ? page + 1 : null,
         };
     } catch (error) {
