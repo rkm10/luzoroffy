@@ -3,6 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchAnimeBySeason } from "@/lib/jikan";
 import { useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
+import { motion } from "framer-motion"
 
 export default function SeasonAnimePage() {
     const { year, season } = useParams();
@@ -33,7 +34,12 @@ export default function SeasonAnimePage() {
     return (
         <div className="p-6">
             <h1 className="text-3xl font-bold mb-4">{season.toUpperCase()} {year} Anime</h1>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <motion.div
+                layout
+                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
+                {console.log(data)}
                 {data?.pages.flatMap((page) =>
                     page.data.map((anime) => (
                         <div key={anime.mal_id} className="border p-3 rounded-lg shadow">
@@ -42,7 +48,7 @@ export default function SeasonAnimePage() {
                         </div>
                     ))
                 )}
-            </div>
+            </motion.div>
 
             <div ref={observerRef} className="h-10" />
 

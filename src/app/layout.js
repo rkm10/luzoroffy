@@ -1,7 +1,7 @@
 "use client";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import "./globals.css";
-import { ThemeProvider } from "@/components/ThemeProvider"; 
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 
 const queryClient = new QueryClient();
@@ -16,8 +16,10 @@ export default function RootLayout({ children }) {
             defaultTheme="system"
             disableTransitionOnChange
             enableSystem
-            >
-            {children}
+          >
+            <div className="min-h-screen" style={{maxWidth: "1200px", margin: "0 auto"}}>
+              {children}
+            </div>
           </ThemeProvider>
         </QueryClientProvider>
       </body>

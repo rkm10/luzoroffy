@@ -4,6 +4,7 @@ import { fetchAnimeBySeasons } from "@/lib/jikan";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import ModeToggle from "@/components/ModeToggle";
 
 export default function AnimePage() {
     const router = useRouter();
@@ -17,6 +18,7 @@ export default function AnimePage() {
 
     return (
         <div className="p-6">
+            <ModeToggle />
             <h1 className="text-3xl font-bold mb-4">Years and Seasons</h1>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {data.map((anime) => (
