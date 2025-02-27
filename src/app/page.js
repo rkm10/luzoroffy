@@ -22,14 +22,14 @@ export default function Home() {
           </a>
         </div>
 
-        <Image
+        {/* <Image
           className="mt-12"
           src="/anime-hero.png"
           alt="Anime Hero Image"
           width={400}
           height={300}
           priority
-        />
+        /> */}
       </main>
       <footer className="text-sm text-gray-500 dark:text-gray-400">
         © 2024 AnimeVerse. All rights reserved.
