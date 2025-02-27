@@ -28,6 +28,15 @@ const seasons = [
 function Page({ params }) {
   const year = params.year;
 
+  // Add validation for year
+  if (isNaN(year) || year < 1917 || year > new Date().getFullYear()) {
+    return (
+      <div className="container mx-auto p-4">
+        <h1 className="text-2xl font-bold mb-4">Invalid Year</h1>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Anime from {year}</h1>
