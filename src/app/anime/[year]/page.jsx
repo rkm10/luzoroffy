@@ -31,14 +31,14 @@ function Page({ params }) {
   // Add validation for year
   if (isNaN(year) || year < 1917 || year > new Date().getFullYear()) {
     return (
-      <div className="container mx-auto p-4">
+      <div className="container mx-auto pt-14 p-4 md:p-8 md:pt-14">
         <h1 className="text-2xl font-bold mb-4">Invalid Year</h1>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto pt-14 p-4 md:p-8 md:pt-14">
       <h1 className="text-2xl font-bold mb-4">Anime from {year}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {seasons.map((season) => (

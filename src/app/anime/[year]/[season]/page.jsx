@@ -63,7 +63,7 @@ export default function SeasonAnimePage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen p-4 sm:p-6 md:p-8">
+            <div className="min-h-screen pt-14 p-4 md:p-8 md:pt-14">
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">
                     <Skeleton className="h-8 sm:h-10 md:h-12 w-64 mx-auto" />
                 </h1>
@@ -85,7 +85,7 @@ export default function SeasonAnimePage() {
     }
 
     return (
-        <div className="min-h-screen p-4 sm:p-6 md:p-8">
+        <div className="min-h-screen pt-14 p-4 md:p-8 md:pt-14">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">
                 {season.toUpperCase()} {year} Anime <ModeToggle />
             </h1>
@@ -105,6 +105,7 @@ export default function SeasonAnimePage() {
                                 className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                             >
                                 <div className="relative group">
+                                    
                                     <img
                                         src={anime.images.jpg.image_url}
                                         alt={anime.title}

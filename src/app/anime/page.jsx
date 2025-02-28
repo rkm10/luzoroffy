@@ -16,7 +16,7 @@ export default function AnimePage() {
     });
 
     if (isLoading) return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto pt-14 p-4 md:p-8 md:pt-14">
             <div className="flex justify-between items-center mb-6">
                 <div className="h-9 w-48 bg-muted rounded animate-pulse" />
                 <div className="h-10 w-10 bg-muted rounded animate-pulse" />
@@ -56,7 +56,7 @@ export default function AnimePage() {
     );
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto pt-14 p-4 md:p-8 md:pt-14">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold">Anime Seasons</h1>
                 <ModeToggle />
