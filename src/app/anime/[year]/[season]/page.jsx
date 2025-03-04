@@ -6,7 +6,6 @@ import { useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSpring, animated } from "@react-spring/web";
-import ModeToggle from "@/components/ModeToggle";
 
 export default function SeasonAnimePage() {
     const router = useRouter();
@@ -87,7 +86,7 @@ export default function SeasonAnimePage() {
     return (
         <div className="min-h-screen pt-14 p-4 md:p-8 md:pt-14">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 text-center">
-                {season.toUpperCase()} {year} Anime <ModeToggle />
+                {season.toUpperCase()} {year} Anime 
             </h1>
             <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                 {data.pages.flatMap((page) => {
