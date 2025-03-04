@@ -41,17 +41,19 @@ export const fetchAnimeBySeason = async (year, season, page = 1) => {
 
 // 🔥 Fetch Recommended Anime
 export const fetchRecommendedAnime = async (page = 1) => {
-  const data = await fetchData(`/recommendations/anime`, { page });
-  if (!data) return { data: [], nextPage: null };
+  try {
+    const response = await axios.get(`${BASE_URL}/recommendations/anime`, { params: { page } });
 
-  const recommendedAnime = data.data.flatMap(rec => rec.entry);
-  const uniqueAnime = Array.from(new Set(recommendedAnime.map(anime => JSON.stringify(anime)))).map(JSON.parse);
+    const uniqueAnime = new Map();
+    response.data.data.forEach(anime => uniqueAnime.set(anime.mal_id, anime));
 
-  return {
-    data: uniqueAnime,
-    nextPage: data.pagination?.has_next_page ? page + 1 : null,
-  };
+    return Array.from(uniqueAnime.values()); // ✅ Always return an array
+  } catch (error) {
+    handleRateLimitError(error);
+    return []; // ✅ Return an empty array instead of null
+  }
 };
+
 
 // 🔥 Fetch Recommended Manga
 export const fetchRecommendedManga = async (page = 1) => {
