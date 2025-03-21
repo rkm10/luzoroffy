@@ -16,14 +16,12 @@ export default function RootLayout({ children }) {
         <QueryClientProvider client={queryClient}>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             disableTransitionOnChange
             enableSystem
           >
             <NavBar />
-            <div className="min-h-screen pt-14 p-4 md:p-8 md:pt-14" style={{ maxWidth: "1200px", margin: "0 auto" }}>
               {children}
-            </div>
             <Footer />
           </ThemeProvider>
         </QueryClientProvider>

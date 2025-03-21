@@ -1,7 +1,8 @@
 "use client";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { fetchTop } from "@/lib/jikan";
+import { fetchAnimeSearch } from "@/lib/jikan";
 import AnimeCard from "@/components/custom/AnimeCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,14 +13,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Filter, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { Filter, Search as SearchIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 // Constants
 const ITEMS_PER_PAGE = 24;
 const MAX_INFINITE_ITEMS = 72; // Switch to pagination after 3 pages
 
-export default function AllAnimePage() {
-  const [filter, setFilter] = useState("bypopularity");
+export default function SearchPage() {
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q") || "";
+  const [type, setType] = useState("anime");
+  const [sort, setSort] = useState("popularity");
+  const [status, setStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
@@ -28,11 +33,12 @@ export default function AllAnimePage() {
     hasNextPage,
     isFetchingNextPage,
     isLoading,
+    error,
   } = useInfiniteQuery({
-    queryKey: ["allAnime", { filter }],
-    queryFn: ({ pageParam = 1 }) => fetchTop("anime", pageParam, filter),
+    queryKey: ["search", { query, type, sort, status }],
+    queryFn: ({ pageParam = 1 }) => fetchAnimeSearch({ query, type, sort, status, page: pageParam }),
     getNextPageParam: (lastPage) => lastPage.pagination?.has_next_page ? lastPage.pagination.current_page + 1 : undefined,
-    keepPreviousData: true,
+    enabled: query.length > 0,
   });
 
   // Process all items
@@ -74,58 +80,96 @@ export default function AllAnimePage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Handle filter change
-  const handleFilterChange = (value) => {
-    setFilter(value);
-    setCurrentPage(1); // Reset to first page when changing filters
-  };
-
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-8 mt-14">
+      <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8">
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold">All Anime</h1>
+            <h1 className="text-3xl font-bold">Search Results</h1>
             <p className="text-muted-foreground">
-              Discover the best anime series ranked by popularity and rating
+              {query ? `Showing results for "${query}"` : "Enter a search term to begin"}
             </p>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
-              <span className="text-sm font-medium">Sort by:</span>
+              <span className="text-sm font-medium">Filters:</span>
             </div>
             
-            <Select value={filter} onValueChange={handleFilterChange}>
-              <SelectTrigger className="w-[160px]">
+            <Select value={type} onValueChange={setType}>
+              <SelectTrigger className="w-[120px]">
+                <SelectValue placeholder="Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="anime">Anime</SelectItem>
+                <SelectItem value="manga">Manga</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={sort} onValueChange={setSort}>
+              <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="bypopularity">Popularity</SelectItem>
-                <SelectItem value="favorite">Most Favorited</SelectItem>
-                <SelectItem value="score">Top Rated</SelectItem>
+                <SelectItem value="popularity">Popularity</SelectItem>
+                <SelectItem value="score">Rating</SelectItem>
+                <SelectItem value="title">Title</SelectItem>
+                <SelectItem value="start_date">Release Date</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="airing">Currently Airing</SelectItem>
+                <SelectItem value="complete">Completed</SelectItem>
                 <SelectItem value="upcoming">Upcoming</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </div>
 
-        {isLoading ? (
+        {query.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <SearchIcon className="h-12 w-12 text-muted-foreground mb-4" />
+            <h2 className="text-2xl font-semibold mb-2">Start Your Search</h2>
+            <p className="text-muted-foreground max-w-md">
+              Enter a search term in the bar above to discover your next favorite anime or manga.
+            </p>
+          </div>
+        ) : isLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-            {[...Array(24)].map((_, i) => (
+            {[...Array(12)].map((_, i) => (
               <div key={i} className="space-y-3">
                 <Skeleton className="aspect-[2/3] w-full rounded-lg" />
                 <Skeleton className="h-4 w-3/4" />
               </div>
             ))}
           </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <p className="text-lg text-muted-foreground mb-4">
+              An error occurred while fetching results.
+            </p>
+            <Button variant="outline" onClick={() => fetchNextPage()}>
+              Try Again
+            </Button>
+          </div>
+        ) : allItems.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <p className="text-lg text-muted-foreground">
+              No results found for "{query}". Try adjusting your search or filters.
+            </p>
+          </div>
         ) : (
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-              {paginatedItems.map((anime) => (
-                <AnimeCard key={anime.mal_id} item={anime} type="anime" />
+              {paginatedItems.map((item) => (
+                <AnimeCard key={item.mal_id} item={item} type={type} />
               ))}
             </div>
 
@@ -167,7 +211,7 @@ export default function AllAnimePage() {
                     Load More
                   </Button>
                 ) : (
-                  <p className="text-gray-600">No more anime to load</p>
+                  <p className="text-gray-600">No more results to load</p>
                 )}
               </div>
             )}
@@ -176,4 +220,4 @@ export default function AllAnimePage() {
       </main>
     </div>
   );
-}
+} 
