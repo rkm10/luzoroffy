@@ -1,5 +1,5 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import {
   getAuth,
   signInWithPopup,
@@ -14,7 +14,6 @@ import { toast } from "sonner";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  // Add your Firebase config here
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
@@ -24,7 +23,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
@@ -81,19 +80,25 @@ export const signOutUser = async () => {
 
 // User document functions
 const createUserDocument = async (user) => {
+  if (!user) return;
+  
   const userDoc = doc(db, "users", user.uid);
   const userSnap = await getDoc(userDoc);
   
   if (!userSnap.exists()) {
-    await setDoc(userDoc, {
-      email: user.email,
-      name: user.displayName,
-      photoURL: user.photoURL,
-      favorites: {
-        anime: [],
-        manga: []
-      }
-    });
+    try {
+      await setDoc(userDoc, {
+        email: user.email,
+        name: user.displayName,
+        photoURL: user.photoURL,
+        favorites: {
+          anime: [],
+          manga: []
+        }
+      });
+    } catch (error) {
+      console.error("Error creating user document:", error);
+    }
   }
 };
 
@@ -133,6 +138,8 @@ export const toggleFavorite = async (userId, itemId, type, itemData) => {
 
 export const getFavorites = async (userId, type) => {
   try {
+    if (!userId) return [];
+    
     const favoritesRef = collection(db, 'users', userId, `${type}_favorites`);
     const snapshot = await getDocs(favoritesRef);
     return snapshot.docs.map(doc => ({

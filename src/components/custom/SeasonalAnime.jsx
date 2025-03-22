@@ -29,11 +29,11 @@ export default function SeasonalAnime() {
     <div className="space-y-4 sm:space-y-6">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <h2 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+          <h2 className="text-base sm:text-2xl font-bold flex items-center gap-2">
             <Calendar className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
             Currently Airing
           </h2>
-          <p className="text-sm sm:text-base text-muted-foreground">
+          <p className="text-xs sm:text-base text-muted-foreground">
             Fresh from this season
           </p>
         </div>

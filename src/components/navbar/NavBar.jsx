@@ -185,12 +185,12 @@ export default function NavBar() {
                       className="flex items-center text-sm font-medium hover:text-primary"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      <Bookmark className="mr-2 h-4 w-4" />
+                      {/* <Bookmark className="mr-2 h-4 w-4" /> */}
                       Favorites
                     </Link>
                     <Button
                       variant="ghost"
-                      className="w-full justify-start"
+                      className="w-full justify-end "
                       onClick={() => {
                         handleSignOut();
                         setIsMenuOpen(false);

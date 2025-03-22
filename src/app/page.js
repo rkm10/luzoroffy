@@ -85,11 +85,11 @@ export default function HomePage() {
         <div className="space-y-4 sm:space-y-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <h2 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+              <h2 className="text-base sm:text-2xl font-bold flex items-center gap-2">
                 <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-purple-500" />
                 Recommended Anime
               </h2>
-              <p className="text-sm sm:text-base text-muted-foreground">
+              <p className="text-xs sm:text-base text-muted-foreground">
                 Popular picks you might enjoy
               </p>
             </div>
@@ -137,11 +137,11 @@ export default function HomePage() {
         <div className="space-y-4 sm:space-y-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <h2 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+              <h2 className="text-base sm:text-2xl font-bold flex items-center gap-2">
                 <Star className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-500" />
                 Top Manga
               </h2>
-              <p className="text-sm sm:text-base text-muted-foreground">
+              <p className="text-xs sm:text-base text-muted-foreground">
                 Most popular manga series
               </p>
             </div>

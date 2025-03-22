@@ -50,7 +50,7 @@ export default function FavoritesPage() {
   }
 
   return (
-    <div className="container py-8">
+    <div className="container py-8 p-4">
       <h1 className="text-3xl font-bold mb-6">Your Favorites</h1>
       <Tabs defaultValue="anime" className="w-full">
         <TabsList className="mb-4">
