@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,18 +22,27 @@ export default function SignUpPage() {
   });
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
+
   if (user) {
-    router.push("/");
     return null;
   }
 
   const handleGoogleSignUp = async () => {
     setIsLoading(true);
+    setError("");
     try {
-      await login();
-      router.push("/");
+      const result = await login();
+      if (result) {
+        router.push("/");
+      }
     } catch (error) {
       console.error("Failed to sign up with Google:", error);
+      setError("Failed to sign up with Google. Please try again.");
     } finally {
       setIsLoading(false);
     }

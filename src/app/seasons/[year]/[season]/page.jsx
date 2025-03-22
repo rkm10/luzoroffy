@@ -239,6 +239,7 @@ export default function SeasonAnimePage() {
             <animated.div
               key={anime.uniqueKey}
               style={fadeIn}
+              onClick={() => router.push(`/anime/${anime.mal_id}`)}
               className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <div className="relative aspect-[3/4]">
@@ -247,7 +248,6 @@ export default function SeasonAnimePage() {
                   alt={anime.title}
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  onClick={() => router.push(`/anime/${anime.mal_id}`)}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,23 +14,33 @@ export default function LoginPage() {
   const { user, login } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [user, router]);
+
   if (user) {
-    router.push("/");
     return null;
   }
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
+    setError("");
     try {
-      await login();
-      router.push("/");
+      const result = await login();
+      if (result) {
+        router.push("/");
+      }
     } catch (error) {
       console.error("Failed to sign in with Google:", error);
+      setError("Failed to sign in with Google. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -39,6 +49,7 @@ export default function LoginPage() {
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
     try {
       const user = await signInWithEmail(formData.email, formData.password);
       if (user) {
@@ -46,6 +57,7 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error("Failed to sign in with email:", error);
+      setError(error.message || "Failed to sign in. Please check your credentials.");
     } finally {
       setIsLoading(false);
     }
@@ -87,10 +99,16 @@ export default function LoginPage() {
             </p>
           </div>
 
+          {error && (
+            <div className="bg-destructive/15 text-destructive px-4 py-3 rounded-lg">
+              {error}
+            </div>
+          )}
+
           <Tabs defaultValue="email" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="email">Email</TabsTrigger>
-              <TabsTrigger value="google">Google</TabsTrigger>
+              <TabsTrigger value="email" disabled={isLoading}>Email</TabsTrigger>
+              <TabsTrigger value="google" disabled={isLoading}>Google</TabsTrigger>
             </TabsList>
             <TabsContent value="email">
               <form onSubmit={handleEmailLogin} className="space-y-4">
@@ -104,6 +122,7 @@ export default function LoginPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
                     }
+                    disabled={isLoading}
                     required
                   />
                 </div>
@@ -116,10 +135,11 @@ export default function LoginPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, password: e.target.value })
                     }
+                    disabled={isLoading}
                     required
                   />
                 </div>
-                <Button className="w-full" type="submit" disabled={isLoading}>
+                <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Signing in..." : "Sign in"}
                 </Button>
               </form>
@@ -127,33 +147,11 @@ export default function LoginPage() {
             <TabsContent value="google">
               <div className="space-y-4">
                 <Button
-                  variant="outline"
-                  className="w-full"
                   onClick={handleGoogleLogin}
+                  className="w-full"
                   disabled={isLoading}
                 >
-                  {isLoading ? (
-                    "Signing in..."
-                  ) : (
-                    <>
-                      <svg
-                        className="mr-2 h-4 w-4"
-                        aria-hidden="true"
-                        focusable="false"
-                        data-prefix="fab"
-                        data-icon="google"
-                        role="img"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 488 512"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
-                        ></path>
-                      </svg>
-                      Continue with Google
-                    </>
-                  )}
+                  {isLoading ? "Signing in..." : "Sign in with Google"}
                 </Button>
               </div>
             </TabsContent>

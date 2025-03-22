@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchCurrentSeason } from "@/lib/jikan";
+import { fetchSeasonNow } from "@/lib/jikan";
 import AnimeCard from "./AnimeCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +22,7 @@ export default function SeasonalAnime() {
     error,
   } = useQuery({
     queryKey: ["seasonalAnime"],
-    queryFn: () => fetchCurrentSeason(),
+    queryFn: () => fetchSeasonNow(),
   });
 
   return (
@@ -37,7 +37,7 @@ export default function SeasonalAnime() {
             Fresh from this season
           </p>
         </div>
-        <Link href="/seasons/current">
+        <Link href="/seasonal">
           <Button variant="ghost" size="sm" className="gap-1 sm:gap-2 text-sm sm:text-base">
             View All <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4" />
           </Button>
@@ -58,22 +58,23 @@ export default function SeasonalAnime() {
           <p className="text-sm sm:text-base text-muted-foreground">Failed to load seasonal anime</p>
         </div>
       ) : (
-        <div className="relative">
-          <Carousel className="mx-auto">
-            <CarouselContent className="-ml-2 sm:-ml-4">
-              {seasonalAnime?.data.map((anime) => (
-                <CarouselItem
-                  key={anime.mal_id}
-                  className="pl-2 sm:pl-4 basis-1/3 sm:basis-1/4 md:basis-1/4 lg:basis-1/6"
-                >
-                  <AnimeCard item={anime} type="anime" />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-12 sm:-left-16" />
-            <CarouselNext className="hidden md:flex -right-12 sm:-right-16" />
-          </Carousel>
-        </div>
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-2 sm:-ml-4">
+            {seasonalAnime?.data?.map((anime) => (
+              <CarouselItem key={anime.mal_id} className="pl-2 sm:pl-4 basis-1/3 sm:basis-1/4 lg:basis-1/6">
+                <AnimeCard item={anime} type="anime" />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       )}
     </div>
   );

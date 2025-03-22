@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useFavorites } from "@/hooks/useFavorites";
 import { Filter, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 // Constants

@@ -1,6 +1,8 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { fetchDetails, fetchCharacters } from "@/lib/jikan";
+import { useFavorites } from "@/hooks/useFavorites";
+import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,7 +16,10 @@ import {
   PlayCircle,
   BookOpen,
   Heart,
+  HeartOff,
+  Loader2,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // Function to process and deduplicate characters
 const processCharacters = (characters) => {
@@ -48,9 +53,11 @@ const processCharacters = (characters) => {
 };
 
 export default function DetailPage({ params }) {
-  // Unwrap params using React.use()
   const resolvedParams = React.use(params);
   const { type, id } = resolvedParams;
+  const { user } = useAuth();
+  const { isFavorited, isLoading: isFavoriteLoading, toggleFavorite } = useFavorites(type, id);
+  const router = useRouter();
 
   const {
     data: details,
@@ -72,6 +79,18 @@ export default function DetailPage({ params }) {
 
   // Process characters data to ensure uniqueness
   const characters = processCharacters(charactersData);
+
+  const handleFavorite = async () => {
+    if (!user) {
+      // Redirect to login if not authenticated
+      router.push("/login");
+      return;
+    }
+
+    if (details) {
+      await toggleFavorite(details);
+    }
+  };
 
   if (isLoadingDetails) {
     return <LoadingSkeleton />;
@@ -182,9 +201,25 @@ export default function DetailPage({ params }) {
               </div>
 
               <div className="flex gap-4">
-                <Button className="bg-gradient-to-r from-purple-600 to-blue-500">
-                  <Heart className="mr-2 h-4 w-4" /> Add to Favorites
+                <Button 
+                  className={`${
+                    isFavorited 
+                      ? "bg-destructive hover:bg-destructive/90" 
+                      : "bg-gradient-to-r from-purple-600 to-blue-500"
+                  }`}
+                  onClick={handleFavorite}
+                  disabled={isFavoriteLoading}
+                >
+                  {isFavoriteLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : isFavorited ? (
+                    <HeartOff className="mr-2 h-4 w-4" />
+                  ) : (
+                    <Heart className="mr-2 h-4 w-4" />
+                  )}
+                  {isFavorited ? "Remove from Favorites" : "Add to Favorites"}
                 </Button>
+
                 {streaming?.[0]?.url && (
                   <Button variant="outline" asChild>
                     <a href={streaming[0].url} target="_blank" rel="noopener noreferrer">

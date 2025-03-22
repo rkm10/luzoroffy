@@ -106,27 +106,12 @@ export const toggleFavorite = async (userId, itemId, type, itemData) => {
     }
 
     const userDoc = doc(db, "users", userId);
-    const userSnap = await getDoc(userDoc);
-    
-    if (!userSnap.exists()) {
-      throw new Error("User document not found");
-    }
-
-    const userData = userSnap.data();
-    const favorites = userData.favorites[type] || [];
-    const favoriteDoc = doc(db, `users/${userId}/favorites/${type}_${itemId}`);
+    const favoriteDoc = doc(db, `users/${userId}/${type}_favorites`, itemId.toString());
     const favoriteSnap = await getDoc(favoriteDoc);
 
     if (favoriteSnap.exists()) {
       // Remove from favorites
       await deleteDoc(favoriteDoc);
-      await setDoc(userDoc, {
-        ...userData,
-        favorites: {
-          ...userData.favorites,
-          [type]: favorites.filter(id => id !== itemId)
-        }
-      });
       toast.success("Removed from favorites!");
       return false;
     } else {
@@ -135,13 +120,6 @@ export const toggleFavorite = async (userId, itemId, type, itemData) => {
         ...itemData,
         addedAt: new Date().toISOString(),
         type
-      });
-      await setDoc(userDoc, {
-        ...userData,
-        favorites: {
-          ...userData.favorites,
-          [type]: [...favorites, itemId]
-        }
       });
       toast.success("Added to favorites!");
       return true;
