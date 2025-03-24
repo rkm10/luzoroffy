@@ -19,7 +19,7 @@ import {
   HeartOff,
   Loader2,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
 // Function to process and deduplicate characters
 const processCharacters = (characters) => {
@@ -52,9 +52,9 @@ const processCharacters = (characters) => {
   });
 };
 
-export default function DetailPage({ params }) {
-  const resolvedParams = React.use(params);
-  const { type, id } = resolvedParams;
+export default function DetailPage() {
+  const params = useParams();
+  const { type, id } = params;
   const { user } = useAuth();
   const { isFavorited, isLoading: isFavoriteLoading, toggleFavorite } = useFavorites(type, id);
   const router = useRouter();
@@ -66,6 +66,7 @@ export default function DetailPage({ params }) {
   } = useQuery({
     queryKey: ["details", type, id],
     queryFn: () => fetchDetails(id, type),
+    enabled: !!type && !!id,
   });
 
   const {
@@ -74,7 +75,7 @@ export default function DetailPage({ params }) {
   } = useQuery({
     queryKey: ["characters", type, id],
     queryFn: () => fetchCharacters(id, type),
-    enabled: !!details,
+    enabled: !!details && !!type && !!id,
   });
 
   // Process characters data to ensure uniqueness
