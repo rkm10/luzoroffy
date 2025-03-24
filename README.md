@@ -99,7 +99,7 @@ src/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/luzoroffy.git
+   git clone https://github.com/rkm10/luzoroffy.git
    cd luzoroffy
    ```
 
@@ -190,7 +190,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Your Name - [@yourtwitter](https://twitter.com/yourtwitter) - email@example.com
 
-Project Link: [https://github.com/yourusername/luzoroffy](https://github.com/yourusername/luzoroffy)
+Project Link: [https://github.com/rkm10/luzoroffy](https://github.com/rkm10/luzoroffy)
 
 ## 🔍 Key Features Breakdown
 
