@@ -12,14 +12,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useFavorites } from "@/hooks/useFavorites";
 import { Filter, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 // Constants
 const ITEMS_PER_PAGE = 24;
 const MAX_INFINITE_ITEMS = 72; // Switch to pagination after 3 pages
 
-export default function AllAnimePage() {
+export default function MangaPage() {
   const [filter, setFilter] = useState("bypopularity");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -30,8 +29,8 @@ export default function AllAnimePage() {
     isFetchingNextPage,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: ["allAnime", { filter }],
-    queryFn: ({ pageParam = 1 }) => fetchTop("anime", pageParam, filter),
+    queryKey: ["allManga", { filter }],
+    queryFn: ({ pageParam = 1 }) => fetchTop("manga", pageParam, filter),
     getNextPageParam: (lastPage) => lastPage.pagination?.has_next_page ? lastPage.pagination.current_page + 1 : undefined,
     keepPreviousData: true,
   });
@@ -86,9 +85,9 @@ export default function AllAnimePage() {
       <main className="container mx-auto px-4 py-8 mt-14">
         <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8">
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold">All Anime</h1>
+            <h1 className="text-3xl font-bold">All Manga</h1>
             <p className="text-muted-foreground">
-              Discover the best anime series ranked by popularity and rating
+              Explore popular manga series and find your next read
             </p>
           </div>
 
@@ -106,7 +105,7 @@ export default function AllAnimePage() {
                 <SelectItem value="bypopularity">Popularity</SelectItem>
                 <SelectItem value="favorite">Most Favorited</SelectItem>
                 <SelectItem value="score">Top Rated</SelectItem>
-                <SelectItem value="airing">Currently Airing</SelectItem>
+                <SelectItem value="publishing">Publishing</SelectItem>
                 <SelectItem value="upcoming">Upcoming</SelectItem>
               </SelectContent>
             </Select>
@@ -125,8 +124,8 @@ export default function AllAnimePage() {
         ) : (
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-              {paginatedItems.map((anime) => (
-                <AnimeCard key={anime.mal_id} item={anime} type="anime" />
+              {paginatedItems.map((manga) => (
+                <AnimeCard key={manga.mal_id} item={manga} type="manga" />
               ))}
             </div>
 
@@ -168,7 +167,7 @@ export default function AllAnimePage() {
                     Load More
                   </Button>
                 ) : (
-                  <p className="text-gray-600">No more anime to load</p>
+                  <p className="text-gray-600">No more manga to load</p>
                 )}
               </div>
             )}
@@ -177,4 +176,4 @@ export default function AllAnimePage() {
       </main>
     </div>
   );
-}
+} 
